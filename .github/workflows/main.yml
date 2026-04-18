@@ -1,0 +1,22 @@
+name: Build
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Theos
+        run: |
+          bash -c "$(curl -fsSL https://githubusercontent.com)"
+          echo "THEOS=/Users/runner/theos" >> $GITHUB_ENV
+
+      - name: Build Dylib
+        run: |
+          make package FINALPACKAGE=1
+        
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiDylib-Liam
+          path: .theos/obj/*.dylib
